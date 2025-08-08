@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Ore de Lucru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .time-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        /* Butoane cu ID-uri pentru înlocuire ușoară */
+        #btn-calculeaza {
+            flex: 1;
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #btn-calculeaza:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        #btn-calculeaza:active {
+            transform: translateY(0);
+        }
+
+        #btn-reset {
+            flex: 1;
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        #btn-reset:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            text-align: center;
+            color: white;
+            font-size: 1.3em;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+            transition: all 0.3s ease;
+            transform: scale(0.95);
+        }
+
+        .result-container.show {
+            transform: scale(1);
+        }
+
+        .result-container h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .result-value {
+            font-size: 2em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+        .error {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            padding: 10px;
+            background: rgba(220, 53, 69, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏰ Calculator Ore</h1>
+        
+        <div class="input-group">
+            <label for="ora-inceput">🕐 Ora de început:</label>
+            <input type="text" id="ora-inceput" class="time-input" placeholder="HH:MM" value="08:00" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" maxlength="5">
+        </div>
+
+        <div class="input-group">
+            <label for="ora-sfarsit">🕕 Ora de sfârșit:</label>
+            <input type="text" id="ora-sfarsit" class="time-input" placeholder="HH:MM" value="17:00" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" maxlength="5">
+        </div>
+
+
+
+        <div class="button-container">
+            <button id="btn-calculeaza" onclick="calculeazaOre()">
+                📊 Calculează
+            </button>
+            <button id="btn-reset" onclick="resetFormular()">
+                🔄 Reset
+            </button>
+        </div>
+
+        <div class="error" id="error-message"></div>
+
+        <div class="result-container" id="rezultat" style="display: none;">
+            <h3>📈 Total ore lucrate:</h3>
+            <div class="result-value" id="ore-totale">0h 0m</div>
+            <div id="detalii-calcul" style="font-size: 0.9em; margin-top: 15px; opacity: 0.9;"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculeazaOre() {
+            const oraInceput = document.getElementById('ora-inceput').value;
+            const oraSfarsit = document.getElementById('ora-sfarsit').value;
+            const errorDiv = document.getElementById('error-message');
+            const rezultatDiv = document.getElementById('rezultat');
+
+            // Reset erori
+            errorDiv.style.display = 'none';
+
+            if (!oraInceput || !oraSfarsit) {
+                afiseazaEroare('Te rog să completezi ambele ore!');
+                return;
+            }
+
+            // Validează formatul de timp
+            if (!valideazaFormatOra(oraInceput)) {
+                afiseazaEroare('Format invalid pentru ora de început! Folosește formatul HH:MM (ex: 14:20)');
+                return;
+            }
+
+            if (!valideazaFormatOra(oraSfarsit)) {
+                afiseazaEroare('Format invalid pentru ora de sfârșit! Folosește formatul HH:MM (ex: 20:00)');
+                return;
+            }
+
+            // Converteste orele în minute pentru calcul mai ușor
+            const minuteInceput = timeToMinutes(oraInceput);
+            const minuteSfarsit = timeToMinutes(oraSfarsit);
+
+            let minuteLucrate;
+
+            // Verifică dacă se lucrează peste miezul nopții
+            if (minuteSfarsit < minuteInceput) {
+                // Calculează pentru program peste noapte (ex: 22:40 - 01:20)
+                minuteLucrate = (1440 - minuteInceput) + minuteSfarsit;
+            } else {
+                // Program normal în aceeași zi
+                minuteLucrate = minuteSfarsit - minuteInceput;
+            }
+
+            if (minuteLucrate <= 0) {
+                afiseazaEroare('Ora de sfârșit trebuie să fie diferită de ora de început!');
+                return;
+            }
+
+            // Convertește înapoi în ore și minute
+            const oreFinal = Math.floor(minuteLucrate / 60);
+            const minuteFinal = minuteLucrate % 60;
+
+            // Afișează rezultatul
+            document.getElementById('ore-totale').textContent = 
+                `${oreFinal}h ${minuteFinal}m`;
+
+            // Detalii calcul cu indicator pentru program peste noapte
+            let detaliiText = `De la ${oraInceput} la ${oraSfarsit}`;
+            if (minuteSfarsit < minuteInceput) {
+                detaliiText += ` (program peste noapte)`;
+            }
+            document.getElementById('detalii-calcul').innerHTML = detaliiText;
+
+            rezultatDiv.style.display = 'block';
+            rezultatDiv.classList.add('show');
+
+            // Animație pentru rezultat
+            setTimeout(() => {
+                rezultatDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function resetFormular() {
+            document.getElementById('ora-inceput').value = '08:00';
+            document.getElementById('ora-sfarsit').value = '17:00';
+            document.getElementById('rezultat').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function valideazaFormatOra(ora) {
+            const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+            return regex.test(ora);
+        }
+
+        function timeToMinutes(timeStr) {
+            const [ore, minute] = timeStr.split(':').map(num => parseInt(num));
+            return ore * 60 + minute;
+        }
+
+        function afiseazaEroare(mesaj) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = mesaj;
+            errorDiv.style.display = 'block';
+            document.getElementById('rezultat').style.display = 'none';
+        }
+
+        // Adaugă event listeners pentru Enter
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculeazaOre();
+            }
+        });
+
+        // Auto-formatare pentru input-uri de timp
+        function formatTimeInput(input) {
+            let value = input.value.replace(/[^\d:]/g, '');
+            
+            // Adaugă : automat după 2 cifre
+            if (value.length === 2 && !value.includes(':')) {
+                value += ':';
+            }
+            
+            // Limitează la formatul HH:MM
+            if (value.length > 5) {
+                value = value.substring(0, 5);
+            }
+            
+            input.value = value;
+        }
+
+        document.getElementById('ora-inceput').addEventListener('input', function() {
+            formatTimeInput(this);
+        });
+
+        document.getElementById('ora-sfarsit').addEventListener('input', function() {
+            formatTimeInput(this);
+        });
+    </script>
+</body>
+</html>
