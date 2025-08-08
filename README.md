@@ -1,2 +1,2 @@
-# calulator-ore
+# calculator-ore
 Calculare ore, pontaj!
